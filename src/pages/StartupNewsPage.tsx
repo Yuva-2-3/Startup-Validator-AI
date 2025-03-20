@@ -15,31 +15,34 @@ const StartupNewsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchNews = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await axios.get(BASE_URL, {
-          params: {
-            q: keywords.join(" OR "), // Search for multiple startup-related topics
-            language: "en", // Fetch only English news
-            sortBy: "publishedAt", // Get the latest news first
-            apiKey: API_KEY,
-            sources: "techcrunch,forbes,entrepreneur,business-insider",
-          },
-        });
+useEffect(() => {
+  const fetchNews = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get(BASE_URL, {
+        params: {
+          q: keywords.join(" OR "),
+          language: "en",
+          sortBy: "publishedAt",
+          apiKey: API_KEY,
+          sources: "techcrunch,forbes,entrepreneur,business-insider",
+        },
+      });
 
-        setNews(response.data.articles);
-      } catch (err) {
-        setError("Failed to fetch startup news. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
+      console.log("API Response:", response.data); // ✅ Check if data is received
+      setNews(response.data.articles);
+    } catch (err) {
+      console.error("API Fetch Error:", err.response?.data || err.message);
+      setError("Failed to fetch startup news. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchNews();
-  }, []); // Runs once on mount
+  fetchNews();
+}, []);
+
 
   return (
     <div className="container mx-auto p-6">
